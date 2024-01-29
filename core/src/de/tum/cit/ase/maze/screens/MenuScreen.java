@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.ase.maze.screens.MazeRunnerGame;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -21,6 +20,8 @@ import de.tum.cit.ase.maze.screens.MazeRunnerGame;
 public class MenuScreen implements Screen {
 
     private final Stage stage;
+    private MazeRunnerGame game;
+    private GameScreen screen;
 
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
@@ -42,14 +43,34 @@ public class MenuScreen implements Screen {
         table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
 
         // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Go To Game", game.getSkin());
+        TextButton goToGameButton = new TextButton("Start a game", game.getSkin());
         table.add(goToGameButton).width(300).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToGame(); // Change to the game screen when button is pressed
+                game.goToGame("maps/level-1.properties", 0, 0); // Change to level 1 as initial game with 0 score and time
             }
         });
+
+        TextButton fileGameButton = new TextButton("File", game.getSkin());
+        table.add(fileGameButton).width(300).row();
+        fileGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.loadGame();
+            }
+        });
+        TextButton exitGameButton = new TextButton("Exit", game.getSkin());
+        table.add(exitGameButton).width(300).row();
+        exitGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit(); // Exits the app when button is pressed
+            }
+        });
+
+
+
     }
 
     @Override
