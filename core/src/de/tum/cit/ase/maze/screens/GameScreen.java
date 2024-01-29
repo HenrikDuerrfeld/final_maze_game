@@ -1,21 +1,29 @@
 package de.tum.cit.ase.maze.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import  com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.ase.maze.screens.MazeRunnerGame;
+import com.badlogic.gdx.utils.viewport.*;
+import de.tum.cit.ase.maze.utils.FollowCamera;
+//import de.tum.cit.ase.maze.utils.Manager;
+import de.tum.cit.ase.maze.game.*;
+//import de.tum.cit.ase.maze.game.Enemy;
+//import de.tum.cit.ase.maze.game.Key;
+//import de.tum.cit.ase.maze.game.Trap;
 
-import javax.swing.text.html.parser.Entity;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,22 +36,30 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
     private final BitmapFont font;
-    private float sinusInput = 0f;
+    private final Stage stage;
+
     private Viewport viewport;
 
-    // adding game element
-    private int score;
-    private float time;
-    private int heartCount;
-    private int key;
-    private String mapPath;
-    private int level;
-    private Stage stage;
+    List<Entity> objects; // we will use this to store our game elements(entities);
     Batch batch;
     Map map;
-    boolean gamePause = false;
+    Player player;
+    FollowCamera followCamera;
 
-    List<Entity> elements; // we will use this to store our game elements(entities)
+    int score ;
+    float time ;
+    int heart;
+    int keyCount;
+
+    Label scoreLabel;
+    Label heartLabel;
+    Label keyLabel;
+    Label bananaLabel;
+    Label missingKeyLabel;
+
+    Table pauseMenu;
+    boolean gamePause = false;
+    int level = 1;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -52,22 +68,23 @@ public class GameScreen implements Screen {
      */
     public GameScreen(MazeRunnerGame game, String mapPath, int score, int time) {
         this.game = game;
-        this.score = score;
+        objects = new ArrayList<>();
 
-        this.time = time;
-        this.heartCount = 5;
-        this.key = 0;
-        elements = new ArrayList<>();
+
         level = mapPath.split("-")[1].charAt(0) - '0'; // extracting the map level from the path provided
         stage = new Stage(); //creating a stage for ui elements such as buttons ect
         // Create and configure the camera for the game view
         camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
-
-        font = game.getSkin().getFont("font"); // Get the font from the game's skin
-        batch = game.getSpriteBatch(); //using sprite batch for renderig
-        map = (Map) new de.tum.cit.ase.maze.game.Map(mapPath,elements);
         viewport = new ScreenViewport(camera);
+        font = game.getSkin().getFont("font"); // Get the font from the game's skin
+        batch = game.getSpriteBatch(); //using sprite batch for rendering
+        map = new Map(mapPath, objects);
+        player = new Player(new Vector2(map.getEntryCell().col * 16,map.getEntryCell().row * 16));
+        this.score = score;
+        this.time = time;
+        heart = 3;
+        keyCount = 0;
     }
 
 
@@ -101,7 +118,7 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().begin(); // Important to call this before drawing anything
         //rendering the actual map
-        //map.draw(batch);
+        map.draw(batch, player);
         // Draw the character next to the text :) / We can reuse sinusInput here
         // looping true makes our character have the leg walking animation
         // Time variables for each direction
