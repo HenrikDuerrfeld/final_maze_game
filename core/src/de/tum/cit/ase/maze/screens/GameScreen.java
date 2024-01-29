@@ -40,7 +40,7 @@ public class GameScreen implements Screen {
 
     private Viewport viewport;
 
-    List<Entity> objects; // we will use this to store our game elements(entities);
+    List<Entity> elements; // we will use this to store our game elements(entities);
     Batch batch;
     Map map;
     Player player;
@@ -68,7 +68,7 @@ public class GameScreen implements Screen {
      */
     public GameScreen(MazeRunnerGame game, String mapPath, int score, int time) {
         this.game = game;
-        objects = new ArrayList<>();
+        elements = new ArrayList<>();
 
 
         level = mapPath.split("-")[1].charAt(0) - '0'; // extracting the map level from the path provided
@@ -79,12 +79,99 @@ public class GameScreen implements Screen {
         viewport = new ScreenViewport(camera);
         font = game.getSkin().getFont("font"); // Get the font from the game's skin
         batch = game.getSpriteBatch(); //using sprite batch for rendering
-        map = new Map(mapPath, objects);
+        map = new Map(mapPath, elements);
         player = new Player(new Vector2(map.getEntryCell().col * 16,map.getEntryCell().row * 16));
         this.score = score;
         this.time = time;
         heart = 3;
         keyCount = 0;
+    }
+    void createUI(){
+        Table table = new Table(); // Create a table for layout
+        table.setFillParent(true); // Make the table fill the stage
+        stage.addActor(table); // Add the table to the stage
+        table.left().top();
+
+
+        // heart
+        Table heartTable = new Table();
+        table.add(heartTable);
+//        heartTable.setBackground(new TextureRegionDrawable(new Texture("uiBox.png")));
+
+        Image hearthImg = new Image(new Texture("heart.png"));
+        heartLabel = new Label("1",game.getSkin());
+        heartLabel.setColor(Color.WHITE);
+        heartTable.add(heartLabel).pad(10);
+        heartTable.add(hearthImg);
+
+
+        // score
+        Table scoreTable = new Table();
+        table.add(scoreTable);
+//        scoreTable.setBackground(new TextureRegionDrawable(new Texture("uiBox.png")));
+
+        Label label2 = new Label("Score:",game.getSkin());
+        scoreLabel = new Label("3400",game.getSkin());
+        label2.setColor(Color.WHITE);
+        label2.setFontScale(1.0f);
+        scoreLabel.setFontScale(1.0f);
+        scoreLabel.setColor(Color.WHITE);
+        scoreTable.add(label2).pad(10);
+        scoreTable.add(scoreLabel);
+        scoreTable.padLeft(100);
+        scoreTable.padRight(100);
+
+        // time
+        Table timeTable = new Table();
+        table.add(timeTable);
+//        timeTable.setBackground(new TextureRegionDrawable(new Texture("uiBox.png")));
+
+
+        // key
+        Table keyTable = new Table();
+        table.add(keyTable);
+//        keyTable.setBackground(new TextureRegionDrawable(new Texture("uiBox.png")));
+
+        keyLabel = new Label("0/" + map.getKeyCount(),game.getSkin());
+        keyLabel.setFontScale(1.0f);
+        keyLabel.setColor(Color.YELLOW);
+        keyTable.add(keyLabel).pad(10);
+        keyTable.add(new Image(new Texture("key.png")));
+
+        missingKeyLabel = new Label("missing key!",game.getSkin());
+        missingKeyLabel.setVisible(false);
+        missingKeyLabel.setColor(Color.WHITE);
+        missingKeyLabel.setPosition(Gdx.graphics.getWidth()/2 - missingKeyLabel.getWidth()/2,Gdx.graphics.getHeight()/2 - missingKeyLabel.getHeight()/2);
+        stage.addActor(missingKeyLabel);
+
+
+        pauseMenu = new Table();
+        pauseMenu.setFillParent(true);
+
+        pauseMenu.add(new Label("ESC: Continue!",game.getSkin())).padBottom(20).row();
+
+
+        TextButton loadBtn = new TextButton("Load", game.getSkin());
+        pauseMenu.add(loadBtn).width(200);
+        loadBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.loadGame(); // Change to the game screen when button is pressed
+            }
+        });
+        TextButton gotoMenuBtn = new TextButton("Menu", game.getSkin());
+        pauseMenu.add(gotoMenuBtn).width(200).padLeft(50).row();
+        gotoMenuBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToMenu(); // Change to the game screen when button is pressed
+            }
+        });
+
+        pauseMenu.setVisible(false);
+
+        stage.addActor(pauseMenu);
+        //Manager.getInstance().soundsManager.playGameMusic();
     }
 
 
