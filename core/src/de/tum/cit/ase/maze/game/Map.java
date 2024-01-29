@@ -33,6 +33,7 @@ public class Map {
         Properties properties = new Properties();
 
         try {
+            //loading the properties file which contains the map information from the class path
             properties.load(new FileInputStream(path));
             for (java.util.Map.Entry<Object, Object> entry : properties.entrySet()) { // iterating through the properties file
                 String key = (String) entry.getKey(); //retrieving the entry value
@@ -63,6 +64,7 @@ public class Map {
                     grid[row][col] = new Cell(row, col, null);
                 }
             }
+            boolean c = false;
             // in this part we iterate through .properties and also take the value of the xy coordinates and assign the cell type
             for (java.util.Map.Entry<Object, Object> entry : properties.entrySet()) { // iterating through the properties file
                 String key = (String) entry.getKey(); //retrieving the entry value
@@ -89,13 +91,6 @@ public class Map {
                         break;
                     case ENEMY:
                         break;
-                    case KEY:
-                        keyCount++;
-                        break;
-                    case TRAP:
-                        break;
-                    case WALL:
-                        break;
                 }
                 System.out.println(cell.cellType);
             }
@@ -107,6 +102,7 @@ public class Map {
                     }
                 }
             }
+
 
         } catch (Exception exception) {
             exception.printStackTrace();

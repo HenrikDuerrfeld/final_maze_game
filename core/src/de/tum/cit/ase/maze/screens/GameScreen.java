@@ -66,9 +66,10 @@ public class GameScreen implements Screen {
 
         font = game.getSkin().getFont("font"); // Get the font from the game's skin
         batch = game.getSpriteBatch(); //using sprite batch for renderig
-        map = new Map(mapPath, elements);
+        map = (Map) new de.tum.cit.ase.maze.game.Map(mapPath,elements);
         viewport = new ScreenViewport(camera);
     }
+
 
     // Screen interface methods with necessary functionality
     @Override
