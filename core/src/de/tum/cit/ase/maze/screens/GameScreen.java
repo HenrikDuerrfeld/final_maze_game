@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game, String mapPath, int score, int time) {
+    public GameScreen(MazeRunnerGame game, String mapPath, int score, float time) {
         this.game = game;
         elements = new ArrayList<>();
 
@@ -203,7 +203,7 @@ public class GameScreen implements Screen {
         //last key pressed
         String direction = "";
 
-        game.getSpriteBatch().begin(); // Important to call this before drawing anything
+        //game.getSpriteBatch().begin(); // Important to call this before drawing anything
         //rendering the actual map
         map.draw(batch, player);
         // Draw the character next to the text :) / We can reuse sinusInput here

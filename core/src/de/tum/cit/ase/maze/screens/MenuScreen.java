@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
+//import de.tum.cit.ase.maze.utils.Manager;
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
@@ -38,29 +38,30 @@ public class MenuScreen implements Screen {
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("Welcome!", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("Game", game.getSkin(), "title")).padBottom(80).row();
 
         // Create and add a button to go to the game screen
         TextButton goToGameButton = new TextButton("Play", game.getSkin());
-        table.add(goToGameButton).width(300).row();
+
+        TextButton loadGameButton = new TextButton("Load", game.getSkin());
+        TextButton exitButton = new TextButton("Quit", game.getSkin());
+
+        table.add(goToGameButton).width(300);
+        table.add(loadGameButton).width(300);
+        table.add(exitButton).width(300).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToGame("maps/level-1.properties", 0, 0); // Change to level 1 as initial game with 0 score and time
+                game.goToGame("maps/level-1.properties",0,0); // Change to the game screen when button is pressed
             }
         });
-
-        TextButton fileGameButton = new TextButton("File", game.getSkin());
-        table.add(fileGameButton).width(300).row();
-        fileGameButton.addListener(new ChangeListener() {
+        loadGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.loadGame();
+                game.loadGame(); // Change to the game screen when button is pressed
             }
         });
-        TextButton exitGameButton = new TextButton("Exit", game.getSkin());
-        table.add(exitGameButton).width(300).row();
-        exitGameButton.addListener(new ChangeListener() {
+        exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.exit(); // Exits the app when button is pressed

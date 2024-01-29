@@ -151,8 +151,8 @@ public class Map {
                     }
                 }
             }
-            batch.end();
         }
+        batch.end();
     }
 
     //getters and setters
