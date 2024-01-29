@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.ase.maze.utils.SpriteSheet;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.FileInputStream;
 import java.util.*;
 import static de.tum.cit.ase.maze.game.CellType.*;
