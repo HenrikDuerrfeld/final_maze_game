@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * The MazeRunnerGame class represents the core of the Maze Runner game.
@@ -82,8 +88,35 @@ public class MazeRunnerGame extends Game {
         this.setScreen(gameScreen);
     }
     //load game method which uses native file chooser to load in a map from a.properties file
+    // https://github.com/spookygames/gdx-nativefilechooser
     public void loadGame(){
+        NativeFileChooserConfiguration conf = new NativeFileChooserConfiguration();
+        conf.directory = Gdx.files.local("/maps"); //setting /maps as the map choosing point
+        //namefilter to only accept .properties files
+        conf.nameFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".properties");
+            }
+        };
+        //using nativefilechooser
+        fileChooser.chooseFile(conf, new NativeFileChooserCallback() {
+            @Override
+            public void onFileChosen(FileHandle file) { //taking theinputted file as our new mapPath
+            gameScreen = new GameScreen(that, file.path(), 0, 0);
+            setScreen(gameScreen);
+            }
 
+            @Override
+            public void onCancellation() {
+
+            }
+
+            @Override
+            public void onError(Exception exception) {
+
+            }
+        });
     }
 
     /**
