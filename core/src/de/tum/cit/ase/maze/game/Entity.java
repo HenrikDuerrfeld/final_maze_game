@@ -17,7 +17,9 @@ public class Entity {
         this.pos = pos;
         this.texture = texture;
     }
+    public void uodate(){
 
+    }
     //gets the position of the player
     public Vector2 getPos() {
         return pos;

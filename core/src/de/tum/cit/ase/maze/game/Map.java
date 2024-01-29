@@ -10,6 +10,7 @@ import de.tum.cit.ase.maze.utils.SpriteSheet;
 import javax.swing.text.html.parser.Entity;
 import java.io.FileInputStream;
 import java.util.*;
+import static de.tum.cit.ase.maze.game.CellType.*;
 
 public class Map {
     private int rows; // rows and columns for the size of our map grid
@@ -91,6 +92,10 @@ public class Map {
                         break;
                     case ENEMY:
                         break;
+                    case KEY:
+                        break;
+                    case TRAP:
+                        break;
                 }
                 System.out.println(cell.cellType);
             }
@@ -109,19 +114,21 @@ public class Map {
         }
         position = new Vector2(0, 0); //character position
     }
-    // this method will be used to choose a cell and draw it so add its texture
+
+        // this method will be used to choose a cell and draw it so add its texture
     // batch is used for rendering
     private void texturize(Batch batch, Cell cell, TextureRegion textureRegion){
         batch.draw(textureRegion, position.x + cell.col * cellSize,position.y + cell.row * cellSize,mapSheet.getWidth()/2,mapSheet.getHeight()/2,mapSheet.getWidth(),mapSheet.getHeight(),1,1,0);
     }
     //we will now use the texturize function to draw the elemets of our map, finally
-    public void draw(Batch batch){
-        batch.end();
-
+    public void draw(Batch batch, Player player){
         batch.begin();
         for(int row = 0; row < rows;row++) {
             for (int col = 0; col < cols; col++) {
                 Cell cell = grid[row][col];
+                if(Vector2.dst(player.pos.x,player.pos.y,cell.col*16,cell.row*16) > 1500){
+                    continue;
+                }
                 //rendering the cell type based on the frame from basic tiles
                 if(cell.cellType == null){
                     texturize(batch,cell,mapSheet.getTexture(11));
@@ -145,11 +152,9 @@ public class Map {
                     }
                 }
             }
+            batch.end();
         }
-        batch.end();
     }
-
-
 
     //getters and setters
     public Cell getCell(int row, int column){
@@ -163,11 +168,11 @@ public class Map {
         this.rows = rows;
     }
 
-    public int getColumns() {
+    public int getCols() {
         return cols;
     }
 
-    public void setColumns(int columns) {
+    public void setCols(int columns) {
         this.cols = columns;
     }
 

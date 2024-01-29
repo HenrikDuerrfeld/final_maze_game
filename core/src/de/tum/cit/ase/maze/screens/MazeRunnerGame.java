@@ -31,6 +31,7 @@ public class MazeRunnerGame extends Game {
     private Animation<TextureRegion> characterUpAnimation;
     private Animation<TextureRegion> characterLeftAnimation;
     private Animation<TextureRegion> characterRightAnimation;
+    MazeRunnerGame that;
 
     /**
      * Constructor for MazeRunnerGame.
@@ -38,7 +39,10 @@ public class MazeRunnerGame extends Game {
      * @param fileChooser The file chooser for the game, typically used in desktop environment.
      */
     public MazeRunnerGame(NativeFileChooser fileChooser) {
+
         super();
+        this.fileChooser = fileChooser;
+        that = this;
     }
 
     /**
