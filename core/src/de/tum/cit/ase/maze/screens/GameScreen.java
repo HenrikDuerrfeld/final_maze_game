@@ -43,7 +43,7 @@ public class GameScreen implements Screen {
     Batch batch;
     Map map;
     Player player;
-    FollowCamera followCamera;
+    FollowCamera followCamera; //for player follow
 
     int score ;
     float time ;
@@ -79,7 +79,7 @@ public class GameScreen implements Screen {
         map = new Map(mapPath,objects);
         player = new Player(new Vector2(map.getEntryCell().col * 16,map.getEntryCell().row * 16));
         initInput();
-        followCamera = new FollowCamera(camera,map);
+        followCamera = new FollowCamera(camera,map); //initializing our follow camera with the map and the OrthographicCamera from gdx
 
 
         this.score = score;
