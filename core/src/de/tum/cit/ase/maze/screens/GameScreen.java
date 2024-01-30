@@ -75,8 +75,9 @@ public class GameScreen implements Screen {
         stage = new Stage(); //creating a stage for ui elements such as buttons ect
         // Create and configure the camera for the game view
         camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-
         viewport = new ScreenViewport(camera);
+        followCamera = new FollowCamera(camera, map); // makes map not tiny anymore haha
+
         font = game.getSkin().getFont("font"); // Get the font from the game's skin
         batch = game.getSpriteBatch(); //using sprite batch for rendering
         map = new Map(mapPath, elements);
@@ -205,7 +206,11 @@ public class GameScreen implements Screen {
 
         //game.getSpriteBatch().begin(); // Important to call this before drawing anything
         //rendering the actual map
-        map.draw(batch, player);
+        map.draw(batch, player); //rendering map and player
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
+        stage.draw(); // Draw the stage
+
+        viewport.apply(false);//updating camera to fit screen size
         // Draw the character next to the text :) / We can reuse sinusInput here
         // looping true makes our character have the leg walking animation
         // Time variables for each direction
@@ -214,6 +219,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         camera.setToOrtho(false);
+        viewport.update(width, height, false);
     }
 
     @Override
