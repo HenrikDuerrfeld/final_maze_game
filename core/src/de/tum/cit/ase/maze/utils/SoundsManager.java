@@ -7,9 +7,9 @@ import java.util.HashMap;
 
 public class SoundsManager {
 
-    public HashMap<String, Sound> sounds = new HashMap();
+    public HashMap<String, Sound> sounds = new HashMap(); // hash map to store all our sounds
 
-    public SoundsManager(){
+    public SoundsManager(){ //simply adding the sounds to the hash map to be playef later
         sounds.put("menuMusic",Gdx.audio.newSound(Gdx.files.internal("sounds/background.mp3")));
         sounds.put("gameMusic",Gdx.audio.newSound(Gdx.files.internal(  "sounds/gameMusic.mp3")));
         sounds.put("death",Gdx.audio.newSound(Gdx.files.internal(  "sounds/death.wav")));
@@ -22,27 +22,6 @@ public class SoundsManager {
 
     public void play(String sound,float volume){
         sounds.get(sound).play(volume);
-    }
+    }//play sound method which will play the desired sound with the set volume
 
-
-    public void playMenuMusic(){
-        sounds.get("gameMusic").stop();
-
-        sounds.get("menuMusic").stop();
-        sounds.get("menuMusic").loop(0.7f);
-    }
-    public void playGameMusic(){
-        sounds.get("menuMusic").stop();
-
-        sounds.get("gameMusic").stop();
-        sounds.get("gameMusic").loop(0.7f);
-    }
-
-    public void stopMusic(){
-        sounds.get("music").stop();
-    }
-
-    public void stop(String sound){
-        sounds.get(sound).stop();
-    }
 }
