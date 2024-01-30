@@ -87,6 +87,7 @@ public class GameScreen implements Screen {
         heart = 3;
         keyCount = 0;
     }
+
     void createUI(){
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
@@ -188,7 +189,6 @@ public class GameScreen implements Screen {
 
         camera.update(); // Update the camera
         batch.setProjectionMatrix(viewport.getCamera().combined);
-
 
         // Move text in a circular path to have an example of a moving object
         //sinusInput += delta;
