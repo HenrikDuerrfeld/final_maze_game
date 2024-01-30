@@ -184,7 +184,6 @@ public class GameScreen implements Screen {
         pauseMenu.setVisible(false);
 
         stage.addActor(pauseMenu);
-        Manager.getInstance().soundsManager.playGameMusic();
     }
     //handling inputs with InputMultiplexer from gdx for the keyup and down methods written in player
     void initInput(){

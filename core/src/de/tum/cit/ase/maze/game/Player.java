@@ -7,6 +7,7 @@ import de.tum.cit.ase.maze.utils.Rectangle;
 import de.tum.cit.ase.maze.utils.SpriteSheet;
 import de.tum.cit.ase.maze.utils.Manager;
 import com.badlogic.gdx.math.Vector2;
+import de.tum.cit.ase.maze.utils.SoundsManager;
 
 import com.badlogic.gdx.Input.Keys;
 
