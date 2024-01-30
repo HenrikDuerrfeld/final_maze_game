@@ -230,11 +230,11 @@ public class GameScreen implements Screen {
             keyLabel.setText(keyCount + "/" + map.getKeyCount());
 
             List<Entity> addedObjects = new ArrayList<>();
-            player.update(map);
+            player.update(map);// updates our player position do not remove very important
             player.shoot(addedObjects);
 
 
-            for(Entity obj : objects){
+            for(Entity obj : objects){  // using this to constantly update our entities positions aka mobs and bullets
                 obj.update();
             }
             objects.addAll(addedObjects);
@@ -319,7 +319,7 @@ public class GameScreen implements Screen {
             if(Vector2.dst(player.getPos().x,player.getPos().y,obj.getPos().x,obj.getPos().y) > 2000){ // fog of war
                 continue;
             }
-            obj.draw(batch); // draw when within distance
+            obj.draw(batch); // draws our entitites including traps
         }
 
         player.draw(batch); // load player

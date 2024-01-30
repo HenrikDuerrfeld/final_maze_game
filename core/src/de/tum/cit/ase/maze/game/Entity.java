@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.ase.maze.utils.Rectangle;
 
+//entity will be our overarching class for all movable things, player, mobs, bullets
 public class Entity {
 
     //Used to restrict accessing variables outside the package
