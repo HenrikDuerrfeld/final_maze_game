@@ -144,7 +144,11 @@ public class Map {
                             texturize(batch, cell, mapSheet.getTexture(36));
                             break;
                         case TRAP:
+                            texturize(batch, cell, mapSheet.getTexture(22));
+                            break;
                         case ENEMY:
+                            texturize(batch, cell, mapSheet.getTexture(28));
+                            break;
                         case KEY:
                             texturize(batch, cell, mapSheet.getTexture(11));
                             break;
