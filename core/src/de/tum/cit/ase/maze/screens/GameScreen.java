@@ -81,6 +81,7 @@ public class GameScreen implements Screen {
         font = game.getSkin().getFont("font"); // Get the font from the game's skin
         batch = game.getSpriteBatch(); //using sprite batch for rendering
         map = new Map(mapPath, elements);
+        initInput();// calling on initinput
         player = new Player(new Vector2(map.getEntryCell().col * 16,map.getEntryCell().row * 16));
         this.score = score;
         this.time = time;
@@ -175,7 +176,25 @@ public class GameScreen implements Screen {
         stage.addActor(pauseMenu);
         //Manager.getInstance().soundsManager.playGameMusic();
     }
+    //handling inputs with InputMultiplexer from gdx for the keyup and down methods written in player
+    void initInput(){
+        InputMultiplexer mixInput = new InputMultiplexer();
+        mixInput.addProcessor(stage);
+        mixInput.addProcessor(new InputAdapter(){
+            @Override
+            public boolean keyDown(int keycode) {
+                player.onKeyDown(keycode);
+                return super.keyDown(keycode);
+            }
 
+            @Override
+            public boolean keyUp(int keycode) {
+                player.onKeyUp(keycode);
+                return super.keyUp(keycode);
+            }
+        });
+        Gdx.input.setInputProcessor(mixInput);
+    }
 
     // Screen interface methods with necessary functionality
     @Override
