@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
-    private final BitmapFont font;
+    //private final BitmapFont font;
     private final Stage stage;
 
     private Viewport viewport;
@@ -78,7 +78,7 @@ public class GameScreen implements Screen {
         viewport = new ScreenViewport(camera);
         followCamera = new FollowCamera(camera, map); // makes map not tiny anymore haha
 
-        font = game.getSkin().getFont("font"); // Get the font from the game's skin
+
         batch = game.getSpriteBatch(); //using sprite batch for rendering
         map = new Map(mapPath, elements);
         initInput();// calling on initinput

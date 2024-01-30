@@ -10,7 +10,7 @@ public enum CellType {
     ENEMY;
 
     // giving cell types the value which will be present in the .properties file
-    public static CellType getValue(int x){
+    public static CellType fromId(int x){
         switch(x) {
             case 0:
                 return WALL;
