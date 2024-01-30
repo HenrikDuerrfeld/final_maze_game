@@ -171,23 +171,23 @@ public class Map {
                 }
                 //rendering the cell type based on the frame from basic tiles
                 if(cell.cellType == null){
-                    drawCell(batch,cell,mapSheet.getTexture(11));
+                    drawCell(batch,cell,mapSheet.getTexture(12));
                 }
                 else {
                     switch (cell.cellType){
                         case WALL:
-                            drawCell(batch,cell,mapSheet.getTexture(8));
+                            drawCell(batch,cell,mapSheet.getTexture(14));
                             break;
                         case ENTRY_POINT:
-                            drawCell(batch,cell,mapSheet.getTexture(11));
+                            drawCell(batch,cell,mapSheet.getTexture(12));
                             break;
                         case EXIT:
-                            drawCell(batch,cell,mapSheet.getTexture(36));
+                            drawCell(batch,cell,mapSheet.getTexture(48));
                             break;
                         case TRAP:
                         case ENEMY:
                         case KEY:
-                            drawCell(batch,cell,mapSheet.getTexture(11));
+                            drawCell(batch,cell,mapSheet.getTexture(12));
                             break;
                     }
                 }

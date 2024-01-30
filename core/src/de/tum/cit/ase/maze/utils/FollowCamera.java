@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.ase.maze.game.Map;
 // we are using this class to follow our player
+//Camera Movement: Implement a camera movement mechanism that ensures that the player character is always visible within at least the middle 80% of the screen horizontally and vertically during gameplay.
 public class FollowCamera {
     OrthographicCamera camera;
     Map map;

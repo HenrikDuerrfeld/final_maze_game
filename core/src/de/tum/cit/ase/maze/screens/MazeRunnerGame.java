@@ -91,7 +91,7 @@ public class MazeRunnerGame extends Game {
     }
     //load game method which uses native file chooser to load in a map from a.properties file
     // https://github.com/spookygames/gdx-nativefilechooser
-    public void loadGame(){
+    public void loadGame(){ //Your program must be able to read any maze from a properties file and play it.
         NativeFileChooserConfiguration conf = new NativeFileChooserConfiguration();
         conf.directory = Gdx.files.local("/maps"); //setting /maps as the map choosing point
         //namefilter to only accept .properties files
