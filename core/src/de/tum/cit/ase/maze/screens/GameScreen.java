@@ -17,15 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.*;
 import de.tum.cit.ase.maze.utils.FollowCamera;
-//import de.tum.cit.ase.maze.utils.Manager;
+import de.tum.cit.ase.maze.utils.Manager;
 import de.tum.cit.ase.maze.game.*;
-//import de.tum.cit.ase.maze.game.Enemy;
-//import de.tum.cit.ase.maze.game.Key;
-//import de.tum.cit.ase.maze.game.Trap;
+import de.tum.cit.ase.maze.game.Enemy;
+import de.tum.cit.ase.maze.game.Key;
+import de.tum.cit.ase.maze.game.Trap;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -35,12 +34,12 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
-    //private final BitmapFont font;
+    private final BitmapFont font;
     private final Stage stage;
 
     private Viewport viewport;
 
-    List<Entity> elements; // we will use this to store our game elements(entities);
+    List<Entity> objects;
     Batch batch;
     Map map;
     Player player;
@@ -54,39 +53,42 @@ public class GameScreen implements Screen {
     Label scoreLabel;
     Label heartLabel;
     Label keyLabel;
-    Label bananaLabel;
+    Label bananaLabel; // bullets
     Label missingKeyLabel;
 
     Table pauseMenu;
     boolean gamePause = false;
     int level = 1;
 
-    /**
-     * Constructor for GameScreen. Sets up the camera and font.
-     *
-     * @param game The main game class, used to access global resources and methods.
-     */
-    public GameScreen(MazeRunnerGame game, String mapPath, int score, float time) {
+    public GameScreen(MazeRunnerGame game,String mapPath,int score,float time) {
         this.game = game;
-        elements = new ArrayList<>();
+        objects = new ArrayList();
+        // extracting the map level from the path provided
+        level =  mapPath.split("-")[1].charAt(0) - '0';
 
-
-        level = mapPath.split("-")[1].charAt(0) - '0'; // extracting the map level from the path provided
-        stage = new Stage(); //creating a stage for ui elements such as buttons ect
         // Create and configure the camera for the game view
         camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         viewport = new ScreenViewport(camera);
-        followCamera = new FollowCamera(camera, map); // makes map not tiny anymore haha
+        stage = new Stage(); //creating a stage for ui elements such as buttons ect
 
 
-        batch = game.getSpriteBatch(); //using sprite batch for rendering
-        map = new Map(mapPath, elements);
-        initInput();// calling on initinput
+        // Get the font from the game's skin
+        font = game.getSkin().getFont("font");
+
+        batch = game.getSpriteBatch();
+        map = new Map(mapPath,objects);
         player = new Player(new Vector2(map.getEntryCell().col * 16,map.getEntryCell().row * 16));
+        initInput();
+        followCamera = new FollowCamera(camera,map);
+
+
         this.score = score;
         this.time = time;
         heart = 3;
         keyCount = 0;
+        createUI();
+        Manager.getInstance().soundsManager.play("begin",1);
+
     }
 
     void createUI(){
@@ -174,7 +176,7 @@ public class GameScreen implements Screen {
         pauseMenu.setVisible(false);
 
         stage.addActor(pauseMenu);
-        //Manager.getInstance().soundsManager.playGameMusic();
+        Manager.getInstance().soundsManager.playGameMusic();
     }
     //handling inputs with InputMultiplexer from gdx for the keyup and down methods written in player
     void initInput(){
@@ -199,52 +201,147 @@ public class GameScreen implements Screen {
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
-
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToMenu();
+//            game.goToVictoryScreen();
             gamePause = !gamePause;
+            pauseMenu.setVisible(gamePause);
         }
-        ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
+        ScreenUtils.clear(0, 0, 0, 1); //clear screen
 
-        camera.update(); // Update the camera
+
+        camera.update();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        // Move text in a circular path to have an example of a moving object
-        //sinusInput += delta;
-        //float textX = (float) (camera.position.x + Math.sin(sinusInput) * 100);
-        //float textY = (float) (camera.position.y + Math.cos(sinusInput) * 100);
+        if(!gamePause){
+            followCamera.follow(player.getPos()); //camera follows player
 
-        // Set up and begin drawing with the sprite batch
-        game.getSpriteBatch().setProjectionMatrix(camera.combined);
+            // update time,score,heart
+            time += delta;
+            scoreLabel.setText(score);
+            heartLabel.setText(heart);
+            keyLabel.setText(keyCount + "/" + map.getKeyCount());
+
+            List<Entity> addedObjects = new ArrayList<>();
+            player.update(map);
+            player.shoot(addedObjects);
 
 
-        //movment controls
+            for(Entity obj : objects){
+                obj.update();
+            }
+            objects.addAll(addedObjects);
+            //level completion checks, when our player passes a level score increases and he is instantly brought to next level to be able to conitnue the game
+            missingKeyLabel.setVisible(false);
+            for(int row = 0; row < map.getRows();row++) {
+                for (int col = 0; col < map.getCols(); col++) {
+                    Cell cell = map.getCell(row,col);
+                    if(cell.cellType == CellType.EXIT && cell.getRect().collide(player.getRect())){  // checking for player collision with the exit box
+                        if(keyCount == map.getKeyCount()){//checking if player has the key id so continue else not
+                            score += 100;
+                            System.out.println("level: pass " + level);
+                            if(level == 5){
+                                game.goToVictoryScreen(score,time);
+                                //win
+                            }
+                            else {
+                                String mapPath = "maps/level-"+ String.valueOf(level + 1) +".properties";
+                                //assuming that the file has the same formatas all others, we also keep score and time
+                                game.goToGame(mapPath,score,time);
+                            }
+                            return;
+                        }
+                        else {
+                            missingKeyLabel.setVisible(true);
+                            //if key is missing player can not pass
+                        }
+                    }
+                }
+            }
 
-        //last key pressed
-        String direction = "";
+            // collision player with other objects
+            for(Entity obj : objects){
+                if(obj instanceof Slime){
+                    ((Slime)obj).setPlayer(player);
+                }
+                if(obj instanceof Enemy && obj.getRect().collide(player.getRect())){
+                    playerDie(); //decrease heart if it is the last one gameover
+                }
+                else if(obj instanceof Key && obj.getRect().collide(player.getRect())){
+                    obj.destroyFlag = true; // when our player touches the key he gets it and the key is removed from the screen
+                    keyCount++;
+                    score += 50; //score also increase
+                    Manager.getInstance().soundsManager.play("item",1.0f); // play key retrieval sound
+                }
+                else if(obj instanceof Trap && obj.getRect().collide(player.getRect())){
+                    playerDie(); // if player touches a trap he also dies
+                }
+            }
 
-        //game.getSpriteBatch().begin(); // Important to call this before drawing anything
-        //rendering the actual map
-        map.draw(batch, player); //rendering map and player
-        player.draw(batch);
+            // collision between objects
+            for(Entity obj : objects){
+                for(Entity otherObj: objects){
+                    if(obj == otherObj){
+                        continue; // if normal entititys interact thea are set to continue
+                    }
+                    //when bullets touch either traps or slimes those die and score increases for our player
+                    if(obj instanceof PlayerProjectile && (otherObj instanceof Enemy || otherObj instanceof Trap)){
+                        if(obj.getRect().collide(otherObj.getRect())){
+                            score += 5;
+                            obj.destroyFlag = true;
+                            otherObj.destroyFlag = true;
+                        }
+                    }
+
+                }
+            }
+            // when destroyflag is kalled objects are removed
+            for(int i = 0; i < objects.size();i++){
+                if(objects.get(i).destroyFlag){
+                    objects.remove(i);
+                }
+            }
+        }
+
+        //draw
+        map.draw(batch,player); // loading map
+        // objects are only drawn when they are within a certain range of the player
+        for(Entity obj : objects){
+            if(Vector2.dst(player.getPos().x,player.getPos().y,obj.getPos().x,obj.getPos().y) > 2000){ // fog of war
+                continue;
+            }
+            obj.draw(batch); // draw when within distance
+        }
+
+        player.draw(batch); // load player
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
 
-        viewport.apply(false);//updating camera to fit screen size
-        // Draw the character next to the text :) / We can reuse sinusInput here
-        // looping true makes our character have the leg walking animation
-        // Time variables for each direction
+        viewport.apply(false);
     }
 
+    void playerDie(){ // when player dies his heart count decreases if it is 0 then the game is over otherwise the player is spawned back to the begining of the level
+        heart--;
+        Cell entryCell = map.getEntryCell();
+        player.setPos(new Vector2(entryCell.col * 16,entryCell.row * 16));
+        Manager.getInstance().soundsManager.play("death",1.0f);
+        if(heart <= 0){
+            game.goToGameOverScreen(score,time);
+        }
+    }
+
+    // resizing game window for changign of screen sizes
     @Override
     public void resize(int width, int height) {
         camera.setToOrtho(false);
-        viewport.update(width, height, false);
+        viewport.update(width,height,false);
+//        stage.getViewport().update(width, height, false); // Update the stage viewport on resize
     }
 
     @Override
     public void pause() {
+
     }
 
     @Override
@@ -253,6 +350,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+
     }
 
     @Override
@@ -262,5 +360,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
     }
-    // Additional methods and logic can be added as needed for the gamescreen
+
+    // Additional methods and logic can be added as needed for the game screen
 }
