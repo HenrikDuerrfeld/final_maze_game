@@ -68,7 +68,7 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
-        goToGame("maps/level-1.properties",0,0); // Navigate to the menu screen
+        goToMenu(); // Navigate to the menu screen
     }
 
     /**
