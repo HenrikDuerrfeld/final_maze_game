@@ -1,31 +1,39 @@
 package de.tum.cit.ase.maze.game;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.ase.maze.utils.Rectangle;
 import de.tum.cit.ase.maze.utils.SpriteSheet;
+import de.tum.cit.ase.maze.utils.Manager;
+import com.badlogic.gdx.math.Vector2;
+
 import com.badlogic.gdx.Input.Keys;
+
 import java.util.List;
 
 public class Player extends Entity {
+    boolean onGround = false;
     float speed;
-    SpriteSheet sheet;
+    boolean dead = false;
+    boolean jumping = false;
     SpriteSheet walkSheet_down;
     SpriteSheet walkSheet_up;
     SpriteSheet walkSheet_left;
     SpriteSheet walkSheet_right;
+    SpriteSheet sheet;
 
     //represents the position of the player in the 2D game world
     //part of the LibGDX framework
     //used to represent 2D vectors, where x and y components denote the position in the horizontal and vertical directions
     Vector2 dir;
     Vector2 facingDir;
+    int bananaCount = 0;
+    boolean shooting = false;
+    float shootTime = 0;
 
     public Player(Vector2 pos) {
-        super(pos, null);
+        super(pos,null);
 
         // Initializing sheet with walkSheet_right initially makes the character start by looking to the right
 
@@ -41,16 +49,16 @@ public class Player extends Entity {
 
         // the rest walksheet right, up and left follows the same logic
 
-        walkSheet_down = new SpriteSheet(new Texture("player_walk.png"), 4, 4);
+        walkSheet_down = new SpriteSheet(new Texture("player_walk.png"),4,4);
         walkSheet_down.setPlay(0, 3, 0.1f, true);
 
-        walkSheet_right = new SpriteSheet(new Texture("player_walk.png"), 4, 4);
+        walkSheet_right = new SpriteSheet(new Texture("player_walk.png"),4,4);
         walkSheet_right.setPlay(4, 7, 0.1f, true);
 
-        walkSheet_up = new SpriteSheet(new Texture("player_walk.png"), 4, 4);
+        walkSheet_up = new SpriteSheet(new Texture("player_walk.png"),4,4);
         walkSheet_up.setPlay(8, 11, 0.1f, true);
 
-        walkSheet_left = new SpriteSheet(new Texture("player_walk.png"), 4, 4);
+        walkSheet_left = new SpriteSheet(new Texture("player_walk.png"),4,4);
         walkSheet_left.setPlay(12, 15, 0.1f, true);
 
         sheet = walkSheet_right;
@@ -58,26 +66,26 @@ public class Player extends Entity {
         speed = 2;
 
         // character direction/position is initialized as 0,0 coordinates
-        dir = new Vector2(0, 0);
+        dir = new Vector2(0,0);
 
         // character facing direction is initialized as 1,0 coordinates initially starting into the game looking to the right
-        facingDir = new Vector2(1, 0);
+        facingDir = new Vector2(1,0);
+
     }
 
     // onKeyUp is part 1 of the character movement, it is used for when the movement key is no longer pressed
+
+    // Here we use values of -1, 1 and 0, -1 being leftwards movement, 1 rightward movement and 0 meaning no horizontal movement
+    // In the first case of the switch statements if (dir.x == -1) is the condition of releasing the left arrow key
+    // Input.keys.Left indicates the character was moving leftwards initially however it is then set to dir.x = 0
+    // stopping horizontal movement as in the character becomes stasis
+
+    // the rest follows the same logic
     public void onKeyUp(int keycode) {
-
-        // Here we use values of -1, 1 and 0, -1 being leftwards movement, 1 rightward movement and 0 meaning no horizontal movement
-        // In the first case of the switch statements if (dir.x == -1) is the condition of releasing the left arrow key
-        // Input.keys.Left indicates the character was moving leftwards initially however it is then set to dir.x = 0
-        // stopping horizontal movement as in the character becomes stasis
-
-        // the rest follows the same logic
-
-        switch (keycode) {
+        switch(keycode) {
             case Keys.LEFT:
                 if (dir.x == -1) {
-                    dir.x = 0;
+                    dir.x = 0 ;
                 }
                 break;
             case Keys.RIGHT:
@@ -95,9 +103,11 @@ public class Player extends Entity {
                     dir.y = 0;
                 }
                 break;
+            case Keys.SPACE:
+                break;
         }
-    }
 
+    }
 
     // OnKeyDown is part 2 of the character movement, it is whn the movement keys are actually pressed
 
@@ -106,18 +116,18 @@ public class Player extends Entity {
     // the sheet which brings the animation of the character facing some direction is updated to walkSheet_left making the player
     // turn left
     // facingDir vector is set to the current direction which preserves the information about the facing direction
+
     public void onKeyDown(int keycode) {
         switch(keycode) {
             case Keys.LEFT:
-                dir = new Vector2(-1,0);// walking direction
+                dir = new Vector2(-1,0);
                 sheet = walkSheet_left;
-                facingDir = new Vector2(dir.x,dir.y); // direction he faces
+                facingDir = new Vector2(dir.x,dir.y);
                 break;
             case Keys.RIGHT:
                 dir = new Vector2(1,0);
                 sheet = walkSheet_right;
                 facingDir = new Vector2(dir.x,dir.y);
-                System.out.println("yup");
                 break;
             case Keys.UP:
                 dir = new Vector2(0,1);
@@ -129,11 +139,17 @@ public class Player extends Entity {
                 sheet = walkSheet_down;
                 facingDir = new Vector2(dir.x,dir.y);
                 break;
+            case Keys.SPACE:
+                shootTime = 0;
+                shooting = true;
+                break;
         }
     }
-    //update will update players position based on dir and will check for collisions with walls and handles boundaries so that play
-    //er doesnt move out of bounds
-    public void update(Map map) {
+
+    //update will update players position based on dir and will check for collisions with walls and handles boundaries so that
+    // player doesnt move out of bounds
+
+        public void update(Map map) {
         Vector2 vel = new Vector2(dir.x * speed,dir.y * speed);
         Vector2 prevPos = new Vector2(pos.x,pos.y);
 
@@ -158,14 +174,28 @@ public class Player extends Entity {
         if(pos.y < 0){
             pos.y = 0;
         }
+
+
+        // limit shooting
     }
-    // getrect method used to retrieve the collision box of player to be used later
+
+    public void shoot(List<Entity> objects){
+        if(shooting){
+            bananaCount--;
+            objects.add(new PlayerProjectile(new Vector2(pos.x,pos.y),new Vector2(facingDir.x,facingDir.y)));
+            shooting = false;
+            Manager.getInstance().soundsManager.play("shoot",1.0f);
+        }
+    }
+
+    // the below method works the same way as described in the entity class given this class extends entity
     @Override
     public Rectangle getRect(){
         return new Rectangle(pos.x + 2,pos.y + 2,sheet.getWidth() - 4,sheet.getHeight()/2 - 4);
     }
 
 
+    // the below method works the same way as described in the entity class given this class extends entity
     @Override
     public void draw(Batch batch) {
         // draw currentFrame of player at position x y
@@ -175,8 +205,8 @@ public class Player extends Entity {
         batch.end();
     }
 
+
+    public void setHasBanana(int bananaCount) {
+        this.bananaCount = bananaCount;
+    }
 }
-
-
-
-
