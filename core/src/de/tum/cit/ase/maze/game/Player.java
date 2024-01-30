@@ -2,6 +2,8 @@ package de.tum.cit.ase.maze.game;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.ase.maze.utils.SpriteSheet;
 
@@ -23,7 +25,6 @@ public class Player extends Entity {
         super(pos, null);
 
         // Initializing sheet with walkSheet_right initially makes the character start by looking to the right
-        sheet = walkSheet_right;
 
         // player walk png was added to our asset folder as we didn't want to use all animations included in character png
         // player walk png is 4 x 4 grid png that only contains animations of the player moving up, down, left and right
@@ -48,6 +49,8 @@ public class Player extends Entity {
 
         walkSheet_left = new SpriteSheet(new Texture("player_walk.png"), 4, 4);
         walkSheet_left.setPlay(12, 15, 0.1f, true);
+
+        sheet = walkSheet_right;
 
         speed = 2;
 
@@ -121,6 +124,15 @@ public class Player extends Entity {
                 facingDir = new Vector2(dir.x,dir.y);
                 break;
         }
+    }
+
+    @Override
+    public void draw(Batch batch) {
+        // draw currentFrame of player at position x y
+        batch.begin();
+        TextureRegion t = sheet.getCurrentFrame();
+        batch.draw(t, pos.x ,pos.y ,sheet.getWidth()/2,sheet.getHeight()/2,sheet.getWidth(),sheet.getHeight(),1,1,0);
+        batch.end();
     }
 
 }

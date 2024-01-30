@@ -16,6 +16,7 @@ public class SpriteSheet {
     int current;
     float time;
     boolean loop;
+    int countTime = 0;
 
 
     public SpriteSheet(Texture texture, int rows, int cols) {
@@ -53,4 +54,21 @@ public class SpriteSheet {
         this.loop = loop;
         current = from;
     }
+    public void play() {
+        countTime += Gdx.graphics.getDeltaTime();
+        if(countTime >= time) {
+            countTime = 0;
+            current++;
+            if(current > to && loop) {
+                current = from;
+            }
+            else if(current > to && !loop){
+                current = to;
+            }
+        }
+
+    }
+    public TextureRegion getCurrentFrame() {
+        return frames[current];
+    } //returns current frames used for player
 }
