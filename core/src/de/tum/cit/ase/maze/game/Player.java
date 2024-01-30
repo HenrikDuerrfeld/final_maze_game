@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import de.tum.cit.ase.maze.utils.Rectangle;
 import de.tum.cit.ase.maze.utils.SpriteSheet;
+import com.badlogic.gdx.Input.Keys;
+import java.util.List;
 
 public class Player extends Entity {
     float speed;
@@ -72,24 +75,26 @@ public class Player extends Entity {
         // the rest follows the same logic
 
         switch (keycode) {
-            case Input.Keys.LEFT:
+            case Keys.LEFT:
                 if (dir.x == -1) {
                     dir.x = 0;
                 }
-            case Input.Keys.RIGHT:
+                break;
+            case Keys.RIGHT:
                 if (dir.x == 1) {
                     dir.x = 0;
                 }
                 break;
-            case Input.Keys.UP:
+            case Keys.UP:
                 if (dir.y == 1) {
                     dir.y = 0;
                 }
                 break;
-            case Input.Keys.DOWN:
+            case Keys.DOWN:
                 if (dir.y == -1) {
                     dir.y = 0;
                 }
+                break;
         }
     }
 
@@ -103,28 +108,63 @@ public class Player extends Entity {
     // facingDir vector is set to the current direction which preserves the information about the facing direction
     public void onKeyDown(int keycode) {
         switch(keycode) {
-            case Input.Keys.LEFT:
-                dir = new Vector2(-1,0);
+            case Keys.LEFT:
+                dir = new Vector2(-1,0);// walking direction
                 sheet = walkSheet_left;
-                facingDir = new Vector2(dir.x,dir.y);
+                facingDir = new Vector2(dir.x,dir.y); // direction he faces
                 break;
-            case Input.Keys.RIGHT:
+            case Keys.RIGHT:
                 dir = new Vector2(1,0);
                 sheet = walkSheet_right;
                 facingDir = new Vector2(dir.x,dir.y);
+                System.out.println("yup");
                 break;
-            case Input.Keys.UP:
+            case Keys.UP:
                 dir = new Vector2(0,1);
                 sheet = walkSheet_up;
                 facingDir = new Vector2(dir.x,dir.y);
                 break;
-            case Input.Keys.DOWN:
+            case Keys.DOWN:
                 dir = new Vector2(0,-1);
                 sheet = walkSheet_down;
                 facingDir = new Vector2(dir.x,dir.y);
                 break;
         }
     }
+    //update will update players position based on dir and will check for collisions with walls and handles boundaries so that play
+    //er doesnt move out of bounds
+    public void update(Map map) {
+        Vector2 vel = new Vector2(dir.x * speed,dir.y * speed);
+        Vector2 prevPos = new Vector2(pos.x,pos.y);
+
+
+        pos = pos.add(vel);
+        if(vel.x != 0 || vel.y != 0){
+            sheet.play();
+        }
+
+        for(int row = 0; row < map.getRows();row++) {
+            for (int col = 0; col < map.getCols(); col++) {
+                Cell cell = map.getCell(row,col);
+                if(cell.cellType == CellType.WALL && cell.getRect().collide(this.getRect())){
+                    pos = prevPos;
+                    return;
+                }
+            }
+        }
+        if(pos.x < 0){
+            pos.x = 0;
+        }
+        if(pos.y < 0){
+            pos.y = 0;
+        }
+    }
+    // getrect method used to retrieve the collision box of player to be used later
+    @Override
+    public Rectangle getRect(){
+        return new Rectangle(pos.x + 2,pos.y + 2,sheet.getWidth() - 4,sheet.getHeight()/2 - 4);
+    }
+
 
     @Override
     public void draw(Batch batch) {
