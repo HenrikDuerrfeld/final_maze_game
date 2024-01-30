@@ -30,6 +30,8 @@ import java.util.List;
  * The GameScreen class is responsible for rendering the gameplay screen.
  * It handles the game logic and rendering of the game elements.
  */
+// this is our gamescreen class it incorporates our game so pretty important
+// it brings together most of the codes and notably renders the game, listens for inputs
 public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
