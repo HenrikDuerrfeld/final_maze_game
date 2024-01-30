@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PlayerProjectile extends Entity {
     Vector2 dir;
-    float speed = 5;
+    float speed = 6;
     public PlayerProjectile(Vector2 pos, Vector2 dir) {
         super(pos, new Texture("playerProjectile.png"));
         this.dir = dir;

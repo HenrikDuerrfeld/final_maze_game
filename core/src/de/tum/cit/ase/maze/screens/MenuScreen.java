@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * The MenuScreen class is responsible for displaying the main menu of the game.
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
  */
+//Game Menu: Available on startup and through the Esc button; must allow to continue playing, choosing a new map, or exiting.
 public class MenuScreen implements Screen {
 
     private final Stage stage;

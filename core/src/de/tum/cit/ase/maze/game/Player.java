@@ -12,6 +12,8 @@ import com.badlogic.gdx.Input.Keys;
 
 import java.util.List;
 
+import static com.badlogic.gdx.Input.Keys.A;
+
 public class Player extends Entity {
     boolean onGround = false;
     float speed;
@@ -81,9 +83,10 @@ public class Player extends Entity {
     // stopping horizontal movement as in the character becomes stasis
 
     // the rest follows the same logic
+    //The character must be movable with the arrow keys in four directions.
     public void onKeyUp(int keycode) {
         switch(keycode) {
-            case Keys.LEFT:
+            case (Keys.LEFT):
                 if (dir.x == -1) {
                     dir.x = 0 ;
                 }

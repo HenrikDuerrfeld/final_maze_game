@@ -84,13 +84,13 @@ public class GameScreen implements Screen {
 
         this.score = score;
         this.time = time;
-        heart = 3;
+        heart = 3; //The character has a limited number of lives.
         keyCount = 0;
         createUI();
         Manager.getInstance().soundsManager.play("begin",1);
 
     }
-
+    //HUD: Display the amount of lives left and key collection status at all times.
     void createUI(){
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
@@ -164,8 +164,16 @@ public class GameScreen implements Screen {
                 game.loadGame(); // Change to the game screen when button is pressed
             }
         });
+        TextButton exitBtn = new TextButton("Exit", game.getSkin());
+        pauseMenu.add(exitBtn).width(200).row();
+        exitBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit(); // Change to the game screen when button is pressed
+            }
+        });
         TextButton gotoMenuBtn = new TextButton("Menu", game.getSkin());
-        pauseMenu.add(gotoMenuBtn).width(200).padLeft(50).row();
+        pauseMenu.add(gotoMenuBtn).width(200).row();
         gotoMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -203,7 +211,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-//            game.goToVictoryScreen();
+//Game Menu: Available on startup and through the Esc button; must allow to continue playing, choosing a new map, or exiting.
             gamePause = !gamePause;
             pauseMenu.setVisible(gamePause);
         }
@@ -238,6 +246,7 @@ public class GameScreen implements Screen {
                     Cell cell = map.getCell(row,col);
                     if(cell.cellType == CellType.EXIT && cell.getRect().collide(player.getRect())){  // checking for player collision with the exit box
                         if(keyCount == map.getKeyCount()){//checking if player has the key id so continue else not
+                            // The character must collect a key from the maze and reach the exit before losing all lives.
                             score += 100;
                             System.out.println("level: pass " + level);
                             if(level == 5){
@@ -265,6 +274,7 @@ public class GameScreen implements Screen {
                     ((Slime)obj).setPlayer(player);
                 }
                 if(obj instanceof Enemy && obj.getRect().collide(player.getRect())){
+                    //Static traps and dynamically moving enemies are obstacles. On contact with any of them, the player loses one life.
                     playerDie(); //decrease heart if it is the last one gameover
                 }
                 else if(obj instanceof Key && obj.getRect().collide(player.getRect())){
