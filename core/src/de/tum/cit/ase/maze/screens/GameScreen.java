@@ -277,7 +277,7 @@ public class GameScreen implements Screen {
                     playerDie(); //decrease heart if it is the last one gameover
                 }
                 else if(obj instanceof Key && obj.getRect().collide(player.getRect())){
-                    obj.destroyFlag = true; // when our player touches the key he gets it and the key is removed from the screen
+                    obj.destroy = true; // when our player touches the key he gets it and the key is removed from the screen
                     keyCount++;
                     score += 50; //score also increase
                     Manager.getInstance().soundsManager.play("item",1.0f); // play key retrieval sound
@@ -297,8 +297,8 @@ public class GameScreen implements Screen {
                     if(obj instanceof PlayerProjectile && (otherObj instanceof Enemy || otherObj instanceof Trap)){
                         if(obj.getRect().collide(otherObj.getRect())){
                             score += 5;
-                            obj.destroyFlag = true;
-                            otherObj.destroyFlag = true;
+                            obj.destroy = true;
+                            otherObj.destroy = true;
                         }
                     }
 
@@ -306,7 +306,7 @@ public class GameScreen implements Screen {
             }
             // when destroyflag is kalled objects are removed
             for(int i = 0; i < objects.size();i++){
-                if(objects.get(i).destroyFlag){
+                if(objects.get(i).destroy){
                     objects.remove(i);
                 }
             }

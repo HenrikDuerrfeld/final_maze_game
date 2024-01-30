@@ -10,8 +10,6 @@ public class SoundsManager {
     public HashMap<String, Sound> sounds = new HashMap(); // hash map to store all our sounds
 
     public SoundsManager(){ //simply adding the sounds to the hash map to be playef later
-        sounds.put("menuMusic",Gdx.audio.newSound(Gdx.files.internal("sounds/background.mp3")));
-        sounds.put("gameMusic",Gdx.audio.newSound(Gdx.files.internal(  "sounds/gameMusic.mp3")));
         sounds.put("death",Gdx.audio.newSound(Gdx.files.internal(  "sounds/death.wav")));
         sounds.put("item",Gdx.audio.newSound(Gdx.files.internal(  "sounds/item.wav")));
         sounds.put("shoot",Gdx.audio.newSound(Gdx.files.internal(  "sounds/shoot.wav")));

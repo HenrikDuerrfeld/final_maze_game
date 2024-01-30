@@ -10,7 +10,7 @@ public class Entity {
     //Used to restrict accessing variables outside the package
     //While allowing classes of the same package and subclasses to access it
     protected Vector2 pos;
-    public boolean destroyFlag;
+    public boolean destroy; //adding this attribute to remove entities such as enemies and keys because .remove can only be called after for some reason
 
     Texture texture;
 
