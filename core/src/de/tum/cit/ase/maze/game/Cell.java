@@ -13,7 +13,7 @@ public class Cell {
         this.col = column;
         this.cellType = cellType;
     }
-    public Rectangle getSquare(){
+    public Rectangle getRect(){
         return new Rectangle(col * 16,row * 16,16,16); //defining cell size based on the square class
     }
 }

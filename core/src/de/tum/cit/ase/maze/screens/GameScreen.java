@@ -180,6 +180,7 @@ public class GameScreen implements Screen {
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
+
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToMenu();
@@ -207,6 +208,7 @@ public class GameScreen implements Screen {
         //game.getSpriteBatch().begin(); // Important to call this before drawing anything
         //rendering the actual map
         map.draw(batch, player); //rendering map and player
+        player.draw(batch);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
 

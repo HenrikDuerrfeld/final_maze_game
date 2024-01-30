@@ -129,8 +129,8 @@ public class Map {
                         break;
                 }
             }
-
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             exception.printStackTrace();
         }
         position = new Vector2(0, 0); //character position
@@ -168,7 +168,7 @@ public class Map {
                         case TRAP:
                         case ENEMY:
                         case KEY:
-                            texturize(batch,cell,mapSheet.getTexture(11));
+                            texturize(batch,cell,mapSheet.getTexture(15));
                             break;
                     }
                 }

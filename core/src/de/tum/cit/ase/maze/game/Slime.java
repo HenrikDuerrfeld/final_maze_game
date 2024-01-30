@@ -5,6 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Slime extends Entity {
     public Slime(Vector2 pos) {
-        super(pos, new Texture("trap.png"));
+        super(pos, new Texture("slime.png"));
     }
 }
