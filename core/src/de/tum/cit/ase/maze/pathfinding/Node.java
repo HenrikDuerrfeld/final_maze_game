@@ -63,22 +63,22 @@ public class Node {
         this.parent = parent;
     }
 
-    // Retrieve the row index of the node
+    //In the context of a pathfinding algorithm which works on a grid
+    //these getters and setters manipulate the node positions within the grid
+    //As in updating the position of nodes during exploration, checking the position of nodes in relation to the grid
+
     public int getRow() {
         return row;
     }
 
-    // Set the row index of the node
     public void setRow(int row) {
         this.row = row;
     }
 
-    // Retrieve the column index of the node
     public int getCol() {
         return col;
     }
 
-    // Set the column index of the node
     public void setCol(int col) {
         this.col = col;
     }
