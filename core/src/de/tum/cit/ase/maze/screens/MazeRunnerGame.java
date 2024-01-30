@@ -25,6 +25,8 @@ public class MazeRunnerGame extends Game {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
+    private GameOverScreen gameOverScreen;
+    private WinScreen winScreen;
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -117,6 +119,18 @@ public class MazeRunnerGame extends Game {
 
             }
         });
+    }
+    public void goToVictoryScreen(int score,float time){
+        if (winScreen == null) {
+            winScreen = new WinScreen(this,score,time);
+        }
+        this.setScreen(winScreen);
+    }
+    public void goToGameOverScreen(int score,float time){
+        if (gameOverScreen == null) {
+            gameOverScreen = new GameOverScreen(this,score,time);
+        }
+        this.setScreen(gameOverScreen);
     }
 
     /**
