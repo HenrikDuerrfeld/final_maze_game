@@ -17,7 +17,7 @@ public class Entity {
         this.pos = pos;
         this.texture = texture;
     }
-    public void uodate(){
+    public void update(){
 
     }
     //gets the position of the player

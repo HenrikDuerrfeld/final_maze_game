@@ -91,10 +91,6 @@ public class Map {
                         break;
                     case ENEMY:
                         break;
-                    case KEY:
-                        break;
-                    case TRAP:
-                        break;
                 }
                 System.out.println(cell.cellType);
             }
@@ -106,7 +102,33 @@ public class Map {
                     }
                 }
             }
+            for (java.util.Map.Entry<Object, Object> entry : properties.entrySet()) {
+                String key = (String) entry.getKey();
+                int value = Integer.valueOf((String) entry.getValue());
+                try {
+                    // skip error format
+                    Integer.parseInt(key.split(",")[0]);
+                } catch (Exception e) {
+                    continue;
+                }
+                int col = Integer.parseInt(key.split(",")[0]);
+                int row = Integer.parseInt(key.split(",")[1]);
 
+                Cell cell = grid[row][col];
+                cell.cellType = CellType.getValue(value);
+                switch (cell.cellType) {
+                    case ENEMY:
+                        entities.add(new Slime(new Vector2(cell.col * 16, cell.row * 16)));
+                        break;
+                    case KEY:
+                        entities.add(new Key(new Vector2(cell.col * 16, cell.row * 16)));
+                        keyCount++;
+                        break;
+                    case TRAP:
+                        entities.add(new Trap(new Vector2(cell.col * 16, cell.row * 16)));
+                        break;
+                }
+            }
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -144,13 +166,9 @@ public class Map {
                             texturize(batch, cell, mapSheet.getTexture(36));
                             break;
                         case TRAP:
-                            texturize(batch, cell, mapSheet.getTexture(22));
-                            break;
                         case ENEMY:
-                            texturize(batch, cell, mapSheet.getTexture(28));
-                            break;
                         case KEY:
-                            texturize(batch, cell, mapSheet.getTexture(11));
+                            texturize(batch,cell,mapSheet.getTexture(11));
                             break;
                     }
                 }
