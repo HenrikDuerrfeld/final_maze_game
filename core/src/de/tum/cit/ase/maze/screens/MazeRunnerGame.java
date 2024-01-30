@@ -21,6 +21,7 @@ import java.io.FilenameFilter;
  * The MazeRunnerGame class represents the core of the Maze Runner game.
  * It manages the screens and global resources like SpriteBatch and Skin.
  */
+//this is our screen managing class which also starts the game
 public class MazeRunnerGame extends Game {
     // Screens
     private MenuScreen menuScreen;

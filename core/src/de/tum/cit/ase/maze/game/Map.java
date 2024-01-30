@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
+//this class will load our map based on the .properties file provided by going through the number of rows and columns and assigning
+// the textures based on the values from the files to the x y coordinates provided in the file
 public class Map {
 
     int rows; // rows and cols for the size of our map grid
