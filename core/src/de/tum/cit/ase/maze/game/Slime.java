@@ -14,6 +14,8 @@ import java.util.List;
 public class Slime extends Enemy{
 
     SpriteSheet sheet; //using spritesheet once again for slime animations
+
+    //Connect the pathfinding class to the slime class to use its methods
     PathFinding pathFinding;
     List<Vector2> path; //nodes the slime will follow
     Vector2 target; // target which slime is following( player )
@@ -29,7 +31,6 @@ public class Slime extends Enemy{
         sheet.setPlay(0, 3, 0.02f, true); // from spritesheet
         pathFinding = new PathFinding(map);
 
-
         currentTargetIndex = 0;
         speed = 1.0F;
         target = new Vector2(pos.x ,pos.y);
@@ -37,16 +38,22 @@ public class Slime extends Enemy{
         this.player = null;
         this.path = new ArrayList<>();
     }
-    //setting our player which slime will follow
+    //The setPlayer method assigns a player to the slime if it doesn't already have one
+    // and if the player is within a certain distance by using the code
+    // (Vector2.dst(pos.x, pos.y, player.pos.x, player.pos.y) > 150).
+
     public void setPlayer(Player player){
         if(this.player != null){ //does slime already have a player assigned
             return;
         }
+
+        // This line calculates the cell in the map corresponding to the player's position (destCell)
+        // and then it uses the PathFinding instance to find a path from the current position of the slime to the player
         if(Vector2.dst(pos.x,pos.y,player.pos.x,player.pos.y) > 150){ // how far is slime from player
             return;
         }
         this.player = player;
-        // we use pathifinding to calculate the new path to the player
+        // we use pathfinding to calculate the new path to the player
         Cell destCell = pathFinding.getMap().getCell((int) player.getPos().y/16,(int) player.getPos().x/16);
         path = pathFinding.findPath((int)pos.x/16,(int)pos.y/16,destCell.col,destCell.row );
     }
