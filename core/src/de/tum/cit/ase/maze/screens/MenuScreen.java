@@ -2,6 +2,7 @@ package de.tum.cit.ase.maze.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -35,20 +36,25 @@ public class MenuScreen implements Screen {
 
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
-        stage.addActor(table); // Add the table to the stage
+        table.defaults().space(0); // Set space between cells to 0
 
-        // Add a label as a title
-        table.add(new Label("Game", game.getSkin(), "title")).padBottom(80).row();
+// Add a label as a title
+        Label.LabelStyle labelStyle = new Label.LabelStyle(game.getSkin().get("title", Label.LabelStyle.class));
+        labelStyle.fontColor = Color.PINK;  // Set the desired color here
+        Label label = new Label("WELCOME, WE HOPE YOU ENJOY :)", labelStyle);
+        table.add(label).padBottom(80).colspan(3).row(); // colspan(3) to make the label span all three buttons
 
-        // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Play", game.getSkin());
-
-        TextButton loadGameButton = new TextButton("Load", game.getSkin());
-        TextButton exitButton = new TextButton("Quit", game.getSkin());
+// Create and add buttons to go to the game screen
+        TextButton goToGameButton = new TextButton("PLAY", game.getSkin());
+        TextButton loadGameButton = new TextButton("LEVELS", game.getSkin());
+        TextButton exitButton = new TextButton("EXIT", game.getSkin());
 
         table.add(goToGameButton).width(300);
         table.add(loadGameButton).width(300);
         table.add(exitButton).width(300).row();
+
+        stage.addActor(table); // Add the table to the stage
+
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

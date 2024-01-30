@@ -155,10 +155,6 @@ public class Map {
         return grid[row][col];
     } // returns a certain cell on the grid
 
-    public Cell getRandomEmptyCell(){
-        int randNum = random.nextInt(emptyCells.size());
-        return emptyCells.get(randNum);
-    }
     public int getKeyCount(){
         return keyCount;
     }
